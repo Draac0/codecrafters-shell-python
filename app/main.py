@@ -16,7 +16,7 @@ def find_executables(cmd: str) -> bool:
             for file in files:
                 file_path = os.path.join(root, file)
                 
-                if os.access(file_path, os.X_OK) and os.path.isfile(file_path) and cmd in file:
+                if os.access(file_path, os.X_OK) and os.path.isfile(file_path) and cmd == file:
                     sys.stdout.write(f"{cmd} is {file_path}\n")
                     return True
     

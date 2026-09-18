@@ -1,3 +1,5 @@
+from ntpath import isdir
+import shelve
 import sys
 import os
 import subprocess
@@ -50,6 +52,15 @@ def exec_cmd(cmd: str):
 
 def exec_pwd():
     sys.stdout.write(f"{os.getcwd()}\n")
+    
+def exec_cd(cmd: str):
+    parts = shlex.split(cmd)
+    if len(parts) != 2:
+        return
+    if os.path.isdir(parts[1]):
+        os.chdir(parts[1])
+    else:
+        sys.stdout.write(f"cd: {parts[1]}: No such file or directory")
 
 def main():
     while True:
@@ -63,6 +74,8 @@ def main():
             type_cmd(command)
         elif command == "pwd":
             exec_pwd()
+        elif "cd" == shlex.split(command)[0]:
+            exec_cd(command)
         elif find_executables(shlex.split(command)[0])[1]:
             exec_cmd(command)
         else:

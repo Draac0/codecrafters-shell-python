@@ -8,7 +8,12 @@ def main():
         command = input()
         if command == 'exit':
             break
-        sys.stdout.write(f"{command}: command not found\n")
+        if command.startswith("echo"):
+            cmd_parts = command.split(maxsplit=1)
+            echo_content = cmd_parts[1]
+            sys.stdout.write(f"{echo_content}\n")
+        else:
+            sys.stdout.write(f"{command}: command not found\n")
 
 
 if __name__ == "__main__":

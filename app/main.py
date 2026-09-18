@@ -1,26 +1,26 @@
 import sys
 import os
+import subprocess
+import shlex
 
-def find_executables(cmd: str) -> bool:
+def find_executables(cmd: str) -> tuple[str,bool]:
     path = os.environ.get("PATH")
     if not path:
-        return False
+        return ('',False)
     expanded_path = os.path.expandvars(path)
     directories = expanded_path.split(os.pathsep)
     
     for directory in directories:
         if not directory or not os.path.isdir(directory):
             continue
-        
         for root, _, files in os.walk(directory):
             for file in files:
                 file_path = os.path.join(root, file)
                 
                 if os.access(file_path, os.X_OK) and os.path.isfile(file_path) and cmd == file:
-                    sys.stdout.write(f"{cmd} is {file_path}\n")
-                    return True
+                    return (file_path, True)
     
-    return False
+    return ('',False)
 
 def type_cmd(cmd: str):
     cmd_parts = cmd.split(maxsplit=1)
@@ -33,11 +33,20 @@ def type_cmd(cmd: str):
         sys.stdout.write(f"{type_part} is a shell builtin\n")
         return
     
-    result = find_executables(type_part)
-    if result:
+    file_path, found = find_executables(type_part)
+    if found:
+        sys.stdout.write(f"{type_part} is {file_path}\n")
         return    
     sys.stdout.write(f"{type_part}: not found\n")
             
+def echo_cmd(cmd: str):
+    cmd_parts = cmd.split(maxsplit=1)
+    echo_content = cmd_parts[1]
+    sys.stdout.write(f"{echo_content}\n")
+
+def exec_cmd(cmd: str):
+    cmd_parts = shlex.split(cmd)
+    subprocess.run(cmd_parts)
 
 def main():
     while True:
@@ -46,11 +55,11 @@ def main():
         if command == 'exit':
             break
         elif command.startswith("echo"):
-            cmd_parts = command.split(maxsplit=1)
-            echo_content = cmd_parts[1]
-            sys.stdout.write(f"{echo_content}\n")
+            echo_cmd(command)
         elif command.startswith("type"):
             type_cmd(command)
+        elif find_executables(shlex.split(command)[0])[1]:
+            exec_cmd(command)
         else:
             sys.stdout.write(f"{command}: command not found\n")
 

@@ -48,6 +48,9 @@ def exec_cmd(cmd: str):
     cmd_parts = shlex.split(cmd)
     subprocess.run(cmd_parts)
 
+def exec_pwd():
+    sys.stdout.write(f"{os.getcwd()}\n")
+
 def main():
     while True:
         sys.stdout.write("$ ")
@@ -58,6 +61,8 @@ def main():
             echo_cmd(command)
         elif command.startswith("type"):
             type_cmd(command)
+        elif command == "pwd":
+            exec_pwd()
         elif find_executables(shlex.split(command)[0])[1]:
             exec_cmd(command)
         else:

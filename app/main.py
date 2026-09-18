@@ -57,10 +57,13 @@ def exec_cd(cmd: str):
     parts = shlex.split(cmd)
     if len(parts) != 2:
         return
-    if os.path.isdir(parts[1]):
-        os.chdir(parts[1])
+    path = parts[1]
+    if parts[1] == '~':
+        path = os.environ.get('HOME')
+    if os.path.isdir(path):
+        os.chdir(path)
     else:
-        sys.stdout.write(f"cd: {parts[1]}: No such file or directory\n")
+        sys.stdout.write(f"cd: {path}: No such file or directory\n")
 
 def main():
     while True:

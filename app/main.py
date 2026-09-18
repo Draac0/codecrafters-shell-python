@@ -60,7 +60,7 @@ def exec_cd(cmd: str):
     if os.path.isdir(parts[1]):
         os.chdir(parts[1])
     else:
-        sys.stdout.write(f"cd: {parts[1]}: No such file or directory")
+        sys.stdout.write(f"cd: {parts[1]}: No such file or directory\n")
 
 def main():
     while True:

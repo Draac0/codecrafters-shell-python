@@ -28,7 +28,7 @@ def type_cmd(cmd: str):
         sys.stdout.write(f"Invalid cmd\n")
         return
     type_part = cmd_parts[1]
-    valid_cmds = ['type', 'exit', 'echo']
+    valid_cmds = ['type', 'exit', 'echo', 'pwd']
     if type_part in valid_cmds:
         sys.stdout.write(f"{type_part} is a shell builtin\n")
         return

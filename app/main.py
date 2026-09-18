@@ -42,8 +42,8 @@ def type_cmd(cmd: str):
     sys.stdout.write(f"{type_part}: not found\n")
             
 def echo_cmd(cmd: str):
-    cmd_parts = cmd.split(maxsplit=1)
-    echo_content = cmd_parts[1]
+    cmd_parts = shlex.split(cmd)
+    echo_content = " ".join(cmd_parts[1:])
     sys.stdout.write(f"{echo_content}\n")
 
 def exec_cmd(cmd: str):

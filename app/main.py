@@ -4,25 +4,8 @@ import sys
 import os
 import subprocess
 import shlex
+from app.utils import find_executables, find_unquoted_redirect
 
-def find_executables(cmd: str) -> tuple[str,bool]:
-    path = os.environ.get("PATH")
-    if not path:
-        return ('',False)
-    expanded_path = os.path.expandvars(path)
-    directories = expanded_path.split(os.pathsep)
-    
-    for directory in directories:
-        if not directory or not os.path.isdir(directory):
-            continue
-        for root, _, files in os.walk(directory):
-            for file in files:
-                file_path = os.path.join(root, file)
-                
-                if os.access(file_path, os.X_OK) and os.path.isfile(file_path) and cmd == file:
-                    return (file_path, True)
-    
-    return ('',False)
 
 def type_cmd(cmd: str):
     cmd_parts = cmd.split(maxsplit=1)
@@ -64,6 +47,28 @@ def exec_cd(cmd: str):
         os.chdir(path)
     else:
         sys.stdout.write(f"cd: {path}: No such file or directory\n")
+        
+def exec_redirect(cmd: str) -> None:
+    result = find_unquoted_redirect(cmd)
+    if not result:
+        return
+    sign, index = result
+    
+    cmd_part = cmd[:index]
+    cmd_split = shlex.split(cmd_part)
+    cmd_exec_result = subprocess.run(cmd_split, capture_output=True, text=True)
+    
+    if cmd_exec_result.returncode != 0:
+        sys.stdout.write(f"{cmd_exec_result.stderr}")
+        return
+    if sign == '>':
+        file_path = cmd[index+1:]
+    else:
+        file_path = cmd[index+2:]
+    
+    with open(file_path,'w') as file:
+        file.write(cmd_exec_result.stdout)
+    
 
 def main():
     while True:
@@ -71,6 +76,8 @@ def main():
         command = input()
         if command == 'exit':
             break
+        elif find_unquoted_redirect(command):
+            exec_redirect(command)
         elif command.startswith("echo"):
             echo_cmd(command)
         elif command.startswith("type"):

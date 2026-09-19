@@ -64,10 +64,11 @@ def exec_redirect(cmd: str) -> None:
         write_to_file = cmd_exec_result.stderr
     elif cmd_exec_result.returncode != 0:
         sys.stdout.write(f"{cmd_exec_result.stderr}")
+    add_one = 1 if is_append else 0
     if sign == '>':
-        file_path = cmd[index+1:].strip()
+        file_path = cmd[index+1+add_one:].strip()
     else:
-        file_path = cmd[index+2:].strip()
+        file_path = cmd[index+2+add_one:].strip()
     file_mode = 'a' if is_append else 'w'
     with open(file_path, file_mode) as file:
         file.write(write_to_file)

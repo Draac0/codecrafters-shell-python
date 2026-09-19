@@ -16,6 +16,8 @@ def find_unquoted_redirect(cmd: str) -> Optional[tuple[str, int]]:
         elif cmd[i] == '>' and not in_single and not in_double:
             if i>0 and cmd[i-1] == '1':
                 return ('1>', i-1)
+            elif i>0 and cmd[i-1] == '2':
+                return ('2>', i-1)
             return ('>', i)
         i+=1
     return None

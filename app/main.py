@@ -58,7 +58,12 @@ def exec_redirect(cmd: str) -> None:
     cmd_split = shlex.split(cmd_part)
     cmd_exec_result = subprocess.run(cmd_split, capture_output=True, text=True)
     
-    if cmd_exec_result.returncode != 0:
+    write_to_file = cmd_exec_result.stdout
+    if sign == '2>':
+        if cmd_exec_result.returncode == 0:
+            sys.stdout.write(f"{cmd_exec_result.stdout}\n")
+        write_to_file = cmd_exec_result.stderr
+    elif cmd_exec_result.returncode != 0:
         sys.stdout.write(f"{cmd_exec_result.stderr}")
     if sign == '>':
         file_path = cmd[index+1:].strip()
@@ -66,7 +71,7 @@ def exec_redirect(cmd: str) -> None:
         file_path = cmd[index+2:].strip()
     
     with open(file_path,'w') as file:
-        file.write(cmd_exec_result.stdout)
+        file.write(write_to_file)
     
 
 def main():

@@ -1,4 +1,3 @@
-from ntpath import isdir
 import sys
 import os
 import subprocess

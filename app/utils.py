@@ -62,5 +62,4 @@ def list_all_path_executables() -> list[str]:
                 
                 if os.access(file_path, os.X_OK) and os.path.isfile(file_path):
                     result.append(file)
-    print(result)
     return result

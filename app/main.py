@@ -60,7 +60,6 @@ def exec_redirect(cmd: str) -> None:
     
     if cmd_exec_result.returncode != 0:
         sys.stdout.write(f"{cmd_exec_result.stderr}")
-        return
     if sign == '>':
         file_path = cmd[index+1:].strip()
     else:

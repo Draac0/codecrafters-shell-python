@@ -61,7 +61,7 @@ def exec_redirect(cmd: str) -> None:
     write_to_file = cmd_exec_result.stdout
     if sign == '2>':
         if cmd_exec_result.returncode == 0:
-            sys.stdout.write(f"{cmd_exec_result.stdout}\n")
+            sys.stdout.write(f"{cmd_exec_result.stdout}")
         write_to_file = cmd_exec_result.stderr
     elif cmd_exec_result.returncode != 0:
         sys.stdout.write(f"{cmd_exec_result.stderr}")

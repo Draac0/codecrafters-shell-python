@@ -62,9 +62,9 @@ def exec_redirect(cmd: str) -> None:
         sys.stdout.write(f"{cmd_exec_result.stderr}")
         return
     if sign == '>':
-        file_path = cmd[index+1:]
+        file_path = cmd[index+1:].strip()
     else:
-        file_path = cmd[index+2:]
+        file_path = cmd[index+2:].strip()
     
     with open(file_path,'w') as file:
         file.write(cmd_exec_result.stdout)

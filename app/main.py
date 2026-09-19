@@ -52,7 +52,7 @@ def exec_redirect(cmd: str) -> None:
     result = find_unquoted_redirect(cmd)
     if not result:
         return
-    sign, index = result
+    sign, index, is_append = result
     
     cmd_part = cmd[:index]
     cmd_split = shlex.split(cmd_part)
@@ -68,8 +68,8 @@ def exec_redirect(cmd: str) -> None:
         file_path = cmd[index+1:].strip()
     else:
         file_path = cmd[index+2:].strip()
-    
-    with open(file_path,'w') as file:
+    file_mode = 'a' if is_append else 'w'
+    with open(file_path, file_mode) as file:
         file.write(write_to_file)
     
 

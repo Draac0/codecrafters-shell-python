@@ -3,11 +3,13 @@ import os
 
 
 
-def find_unquoted_redirect(cmd: str) -> Optional[tuple[str, int]]:
+def find_unquoted_redirect(cmd: str) -> Optional[tuple[str, int, bool]]:
     i = 0
     in_single = in_double = False
     n = len(cmd)
     
+    def check_if_append(i: int) -> bool:
+        return True if cmd[i+1] == '>' else False
     while i<n:
         if cmd[i] == "'" and not in_double:
             in_single = not in_single
@@ -15,10 +17,10 @@ def find_unquoted_redirect(cmd: str) -> Optional[tuple[str, int]]:
             in_double = not in_double
         elif cmd[i] == '>' and not in_single and not in_double:
             if i>0 and cmd[i-1] == '1':
-                return ('1>', i-1)
+                return ('1>', i-1, check_if_append(i))
             elif i>0 and cmd[i-1] == '2':
-                return ('2>', i-1)
-            return ('>', i)
+                return ('2>', i-1, check_if_append(i))
+            return ('>', i, check_if_append(i))
         i+=1
     return None
 

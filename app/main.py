@@ -7,7 +7,8 @@ from app.utils import find_executables, find_unquoted_redirect, list_all_path_ex
 import readline
 
 def completer(text: str, state: int) -> Optional[str]:
-    known_cmds = list_all_path_executables().extend('exit')
+    known_cmds = list_all_path_executables()
+    known_cmds.extend('exit')
     filter_cmds = [c for c in known_cmds if c.startswith(text)]
     if state < len(filter_cmds):
         return filter_cmds[state] +' '

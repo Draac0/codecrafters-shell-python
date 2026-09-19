@@ -1,10 +1,24 @@
 from ntpath import isdir
-import shelve
 import sys
 import os
 import subprocess
 import shlex
+from typing import Optional
 from app.utils import find_executables, find_unquoted_redirect
+import readline
+
+def completer(text: str, state: int) -> Optional[str]:
+    known_cmds = ['echo', 'exit']
+    filter_cmds = [c for c in known_cmds if c.startswith(text)]
+    if state < len(filter_cmds):
+        return filter_cmds[state] +' '
+    return None
+
+readline.set_completer(completer)
+if 'libedit' in readline.__doc__:
+    readline.parse_and_bind("bind ^I rl_complete")   # libedit syntax
+else:
+    readline.parse_and_bind("tab: complete")          # GNU readline syntax
 
 
 def type_cmd(cmd: str):
@@ -78,7 +92,7 @@ def main():
     while True:
         sys.stdout.write("$ ")
         command = input()
-        if command == 'exit':
+        if command.strip() == 'exit':
             break
         elif find_unquoted_redirect(command):
             exec_redirect(command)

@@ -89,8 +89,7 @@ def exec_redirect(cmd: str) -> None:
 
 def main():
     while True:
-        sys.stdout.write("$ ")
-        command = input()
+        command = input("$ ")
         if command.strip() == 'exit':
             break
         elif find_unquoted_redirect(command):

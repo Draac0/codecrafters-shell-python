@@ -43,3 +43,24 @@ def find_executables(cmd: str) -> tuple[str,bool]:
                     return (file_path, True)
     
     return ('',False)
+
+def list_all_path_executables() -> list[str]:
+    path = os.environ.get("PATH")
+    if not path:
+        return []
+    
+    result = []
+    expanded_path = os.path.expandvars(path)
+    directories = expanded_path.split(os.pathsep)
+    
+    for directory in directories:
+        if not directory or not os.path.isdir(directory):
+            continue
+        for root, _, files in os.walk(directory):
+            for file in files:
+                file_path = os.path.join(root, file)
+                
+                if os.access(file_path, os.X_OK) and os.path.isfile(file_path):
+                    result.append(file)
+    print(result)
+    return result

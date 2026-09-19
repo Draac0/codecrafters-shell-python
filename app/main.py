@@ -4,11 +4,11 @@ import os
 import subprocess
 import shlex
 from typing import Optional
-from app.utils import find_executables, find_unquoted_redirect
+from app.utils import find_executables, find_unquoted_redirect, list_all_path_executables
 import readline
 
 def completer(text: str, state: int) -> Optional[str]:
-    known_cmds = ['echo', 'exit']
+    known_cmds = list_all_path_executables()
     filter_cmds = [c for c in known_cmds if c.startswith(text)]
     if state < len(filter_cmds):
         return filter_cmds[state] +' '

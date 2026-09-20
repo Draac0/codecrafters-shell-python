@@ -21,6 +21,7 @@ def completer(text: str, state: int) -> Optional[str]:
     return None
 
 readline.set_completer(completer)
+readline.set_completer_delims(readline.get_completer_delims().replace('-',''))
 if 'libedit' in readline.__doc__:
     readline.parse_and_bind("bind ^I rl_complete")   # libedit syntax
 else:

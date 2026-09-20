@@ -1,3 +1,4 @@
+import glob
 from typing import Optional
 import os
 
@@ -63,3 +64,12 @@ def list_all_path_executables() -> list[str]:
                 if os.access(file_path, os.X_OK) and os.path.isfile(file_path):
                     result.append(file)
     return result
+
+
+def get_command_matches(text: str) -> list[str]:
+    known_commands = list_all_path_executables() + ['exit']
+    return [cmd for cmd in known_commands if cmd.startswith(text)]
+
+def get_filename_matches(text: str) -> list[str]:
+    matches = glob.glob(text + "*")
+    return [m + '/' if os.path.isdir(m) else m for m in matches]

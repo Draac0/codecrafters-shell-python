@@ -3,14 +3,21 @@ import os
 import subprocess
 import shlex
 from typing import Optional
-from app.utils import find_executables, find_unquoted_redirect, list_all_path_executables
+from app.utils import find_executables, find_unquoted_redirect, get_command_matches, get_filename_matches
 import readline
 
 def completer(text: str, state: int) -> Optional[str]:
-    known_cmds = list_all_path_executables() + ['exit']
-    filter_cmds = [c for c in known_cmds if c.startswith(text)]
-    if state < len(filter_cmds):
-        return filter_cmds[state] +' '
+    buffer = readline.get_line_buffer()
+    prefix = buffer[:len(buffer) - len(text)] if text else buffer
+    if prefix.strip() == '':
+        options = get_command_matches(text)
+        suffix = ' '
+    else:
+        options = get_filename_matches(text)
+        suffix = ' '
+    
+    if state < len(options):
+        return options[state] + suffix
     return None
 
 readline.set_completer(completer)
